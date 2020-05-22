@@ -33,9 +33,23 @@ class FakeData():
                 'demandedAt': datetime.today().strftime('%Y-%m-%dT%H:%M:%S'),
                 'status': 'VIEW'
             })
+    
+    def dispatch_added_to_cart_messages(self):
+        for item in random.sample(self.data, 400):
+            item['status'] = 'ADDED_TO_CART'
+            self.data.append(item)
+    
+    def dispatch_bought_messages(self):
+        for item in random.sample(self.data, 200):
+            item['status'] = 'BOUGHT'
+            self.data.append(item)
 
 fake_data = FakeData()
 fake_data.dispatch_view_messages()
+fake_data.dispatch_added_to_cart_messages()
+fake_data.dispatch_bought_messages()
+
+# :: Send messages for rabbitMQ
 
 credential_params = pika.PlainCredentials('user', 'bitnami')
 connection_params = pika.ConnectionParameters(
@@ -49,3 +63,5 @@ for body in fake_data.data:
     channel.basic_publish(exchange='', routing_key='hexagonal', body=json.dumps(body))
 
 connection.close()
+
+# :: Send messages for Kafka

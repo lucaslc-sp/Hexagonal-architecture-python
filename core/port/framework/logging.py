@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class Logging(ABC):
+class ILogging(ABC):
 
     @abstractmethod
     def info(msg):

@@ -52,4 +52,8 @@ Supply chain
 
 - https://github.com/Ermlab/python-ddd
 
-- 
+- https://tuhrig.de/messages-vs-events-vs-commands/
+
+- https://barryvanveen.nl/blog/59-different-kinds-of-service-bus-command-bus-service-bus-and-query-bus
+
+- https://blog.lingoapp.com/implementing-a-command-bus-in-python-18b60bbe216
