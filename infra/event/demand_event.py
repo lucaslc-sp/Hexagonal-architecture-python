@@ -1,5 +1,8 @@
 """
+    An event is a message that informs various listeners about something has happened.
+    It’s send by a producer which doesn’t know and doesn’t care about the consumers of the event.
 
+    https://tuhrig.de/messages-vs-events-vs-commands/
 """
 import inject
 

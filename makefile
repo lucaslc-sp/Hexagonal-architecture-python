@@ -18,18 +18,17 @@ env-switch-prod:
 	@echo "switching for PRODUCTION..."
 	@cp .env.prod .env
 
-
 system-packages:
-	@printf "Installing 'pip' and 'virtualenv'... "
+	@printf "Instalando 'pip' e 'virtualenv'... "
 	@curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-	@python3 -q get-pip.py 1> /dev/null
+	@python3  -q  get-pip.py 1> /dev/null --user
 	@pip install -q -U pip
-	@pip install -q virtualenv
+	@pip install -q virtualenv --user
 	@rm get-pip.py
 	@echo "$(SUCCESS)"
 
 packages: env-create
-	@printf "Installing Libraries... "
+	@printf "Installing libraries... "
 	@venv/bin/pip install -q --no-cache-dir -r requirements-dev.txt
 	@echo "$(SUCCESS)"
 

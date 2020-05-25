@@ -1,7 +1,7 @@
 """
 
 """
-
+import json
 import pika
 from core.port.event.message_queue import IMessageQueue
 
@@ -19,8 +19,15 @@ class RabbitMQ(IMessageQueue):
         connection.close()
 
     def subscribe():
-        print('subscribe method rabbitmq')
+        credential_params = pika.PlainCredentials('user', 'bitnami')
+        connection_params = pika.ConnectionParameters(credentials=credential_params)
+        connection = pika.BlockingConnection(connection_params)
 
-    def pull():
-        print('pull method rabbitmq')
+        channel.queue_declare(queue='hello')
+        channel.basic_consume(queue='hello',
+                      auto_ack=True,
+                      on_message_callback=pull)
+
+    def pull(ch, method, properties, body):
+        print(body)
 

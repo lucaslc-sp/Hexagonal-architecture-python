@@ -7,9 +7,13 @@
 import json
 import random
 import pika
+import inject
 
 from datetime import datetime
 from faker import Faker
+
+from core.port.event.message_queue import IMessageQueue
+from infra.event.message_queue.rabbitmq import RabbitMQ
 
 class FakeData():
 
@@ -44,24 +48,19 @@ class FakeData():
             item['status'] = 'BOUGHT'
             self.data.append(item)
 
-fake_data = FakeData()
-fake_data.dispatch_view_messages()
-fake_data.dispatch_added_to_cart_messages()
-fake_data.dispatch_bought_messages()
 
-# :: Send messages for rabbitMQ
+def config_inject(binder: inject.Binder) -> None:
+        binder.bind(IMessageQueue, RabbitMQ)
 
-credential_params = pika.PlainCredentials('user', 'bitnami')
-connection_params = pika.ConnectionParameters(
-    credentials=credential_params)
+@inject.autoparams()
+def start(mq: IMessageQueue):
+    fake_data = FakeData()
+    fake_data.dispatch_view_messages()
+    fake_data.dispatch_added_to_cart_messages()
+    fake_data.dispatch_bought_messages()
 
-connection = pika.BlockingConnection(connection_params)
-channel = connection.channel()
-channel.queue_declare(queue='hexagonal')
+    for body in fake_data.data:
+        mq.publish(body)
 
-for body in fake_data.data:
-    channel.basic_publish(exchange='', routing_key='hexagonal', body=json.dumps(body))
-
-connection.close()
-
-# :: Send messages for Kafka
+inject.configure(config_inject)
+start()
